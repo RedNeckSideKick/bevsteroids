@@ -6,6 +6,7 @@ use bevy::prelude::*;
 use bevy::render::texture::FilterMode;
 
 use crate::components::moving::*;
+use crate::game_config::GameConfig;
 
 // RESOURCES
 
@@ -16,17 +17,23 @@ use crate::components::moving::*;
 /// init system - runs once at the start of the game to set everything up
 /// inputs:
 ///     * cmds          - command buffer to send all setup commands to
+///     * cfg           - game configuration loaded at startup
 ///     * asset_server  - asset loader resource
 ///     * materials     - material resource for sprite rendering
 pub fn init(
     mut cmds: Commands,
+    cfg: Res<GameConfig>,
     asset_server: Res<AssetServer>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
     info!("Initializing game...");
 
-    // TODO: Load the filename from RON or at least a central constant
-    let texture_handle = asset_server.load("icon.png");
+    // TODO: Load the filename from external file (non-compiled)
+    // AssetServer::load() seemed to have troubles with a non-static lifetime
+    // argument being passed. This requires further investigation on my part
+    // if I want to be able to pass a reference to a string slice that was
+    // populated at runtime...
+    let texture_handle = asset_server.load(cfg.asteroid);
 
     // Push resources and entities to add to the world into the command buffer
     cmds.spawn_bundle(OrthographicCameraBundle::new_2d());
