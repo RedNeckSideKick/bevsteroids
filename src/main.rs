@@ -19,7 +19,9 @@ fn main() {
     // Add game resources and systems
     App::build()
         .insert_resource(GameConfig::CFG)
+        .insert_resource(Msaa { samples: 4 })       // Anti-Alias SVGs (meshes)
         .add_plugins(DefaultPlugins)
+        .add_plugin(bevy_svg::prelude::SvgPlugin)   // SVG support
         .add_startup_system(init.system())
         .add_system(texture_update_sys.system())    // Anti-Alias textures
         .add_system(moving_sys.system())
