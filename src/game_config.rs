@@ -10,6 +10,6 @@ pub struct GameConfig {
 impl GameConfig {
     pub const CFG: Self = Self {
         asteroid: "icon.png",
-        ship: "assets/ship.svg"
+        ship: "ship.png"
     };
 }

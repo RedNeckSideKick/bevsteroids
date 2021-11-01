@@ -4,9 +4,12 @@ This file is the primary place for central game data and logic.
 
 use bevy::prelude::*;
 use bevy::render::texture::FilterMode;
-use bevy_svg::prelude::*;
 
-use crate::components::moving::*;
+use crate::components::{
+    moving::*,
+    asteroid::*,
+    ship::*,
+};
 use crate::game_config::GameConfig;
 
 // RESOURCES
@@ -34,7 +37,8 @@ pub fn init(
     // argument being passed. This requires further investigation on my part
     // if I want to be able to pass a reference to a string slice that was
     // populated at runtime...
-    let texture_handle = asset_server.load(cfg.asteroid);
+    let asteroid_texture = asset_server.load(cfg.asteroid);
+    let ship_texture = asset_server.load(cfg.ship);
 
     // Push resources and entities to add to the world into the command buffer
     // Cameras
@@ -42,25 +46,21 @@ pub fn init(
     
     // Asteroids
     cmds.spawn_bundle(SpriteBundle {
-        material: materials.add(texture_handle.into()),
+        material: materials.add(asteroid_texture.into()),
         ..Default::default()
     })
     // Specify initial conditions (position and velocity) for the entity
-    .insert_bundle(MovingBundle::new_in_plane(500.0, 0.0, 0.0, 5.0, -5.0, 1.0));
+    .insert_bundle(MovingBundle::new_in_plane(-500.0, 0.0, 0.0, 15.0, -5.0, 1.0))
+    .insert(Asteroid);
 
     // Ship
+    cmds.spawn_bundle(SpriteBundle {
+        material: materials.add(ship_texture.into()),
+        ..Default::default()
+    })
     // Specify initial conditions (position and velocity) for the entity
-    // TODO: SVG doesn't seem to play well with transformation... need to
-    // TODO: investigate this or switch to regular sprite texture asset
-    let moving = MovingBundle::new_in_plane(0.0, 0.0, 0.0, 0.0, 0.0, 0.1);
-    cmds.spawn_bundle(
-        SvgBuilder::from_file(format!("{}/{}", env!("CARGO_MANIFEST_DIR"), cfg.ship))
-            .origin(Origin::Center)
-            .position(moving.t.translation)
-            .build()
-            .expect("ship asset file not found")
-    )
-    .insert(moving);
+    .insert_bundle(MovingBundle::new_in_plane(0.0, 0.0, 0.0, 0.0, 0.0, 0.5))
+    .insert(Ship);
 }
 
 /// texture_update_sys system - Listens to update events for Assets<Texture>
@@ -76,7 +76,7 @@ pub fn texture_update_sys(
         match ev {
             AssetEvent::Created { handle } => {
                 // A texture was just loaded
-                trace!("Event {:?} recieved on texture id #{:?}", ev, handle);
+                trace!("Event {:?} recieved on texture id {:?}", ev, handle);
                 let texture = textures.get_mut(handle).unwrap();
 
                 // Apply filtering to anti-alias the texture
@@ -84,7 +84,7 @@ pub fn texture_update_sys(
                 texture.sampler.mag_filter = FilterMode::Linear;
             }
             AssetEvent::Modified { handle} => {
-                trace!("Event {:?} recieved on texture id #{:?}", ev, handle);
+                trace!("Event {:?} recieved on texture id {:?}", ev, handle);
             }
             AssetEvent::Removed { handle: _ } => {}
         }
