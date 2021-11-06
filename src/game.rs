@@ -1,4 +1,4 @@
-/* bevsteroids/game.rs
+/* bevsteroids/src/game.rs
 This file is the primary place for central game data and logic.
 */
 
@@ -6,7 +6,9 @@ use bevy::prelude::*;
 use bevy::render::texture::FilterMode;
 
 use crate::components::{
+    main_camera::*,
     moving::*,
+    looping::*,
     asteroid::*,
     ship::*,
 };
@@ -42,15 +44,23 @@ pub fn init(
 
     // Push resources and entities to add to the world into the command buffer
     // Cameras
-    cmds.spawn_bundle(OrthographicCameraBundle::new_2d());
+    cmds.spawn_bundle(OrthographicCameraBundle::new_2d())
+        .insert(MainCamera);    // Flag this camera as the main one
     
+    // TODO: wrap entity creation in functions to clean up this setup script
     // Asteroids
     cmds.spawn_bundle(SpriteBundle {
         material: materials.add(asteroid_texture.into()),
         ..Default::default()
     })
-    // Specify initial conditions (position and velocity) for the entity
-    .insert_bundle(MovingBundle::new_in_plane(-500.0, 0.0, 0.0, 15.0, -5.0, 1.0))
+    .insert_bundle(LoopingBundle {
+        looping: Looping { radius: 128.0 },  // TODO: centrally define this
+        // Specify initial conditions (position and velocity) for the entity
+        moving: MovingBundle::new_in_plane(
+            -500.0, 0.0, 0.0,
+            15.0, -50.0, 1.0
+        )
+    })
     .insert(Asteroid);
 
     // Ship
@@ -58,8 +68,14 @@ pub fn init(
         material: materials.add(ship_texture.into()),
         ..Default::default()
     })
-    // Specify initial conditions (position and velocity) for the entity
-    .insert_bundle(MovingBundle::new_in_plane(0.0, 0.0, 0.0, 0.0, 0.0, 0.5))
+    .insert_bundle(LoopingBundle {
+        looping: Looping { radius: 50.0 },   // TODO: centrally define this
+        // Specify initial conditions (position and velocity) for the entity
+        moving: MovingBundle::new_in_plane(
+            0.0, 0.0, 0.0,
+            0.0, 0.0, 0.5
+        )
+    })
     .insert(Ship);
 }
 

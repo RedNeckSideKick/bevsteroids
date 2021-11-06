@@ -1,13 +1,13 @@
-/* bevsteroids/components/moving.rs
+/* bevsteroids/src/components/moving.rs
 Component for entities that need to move and rotate, e.g. the ship and asteroids
 */
 
 use bevy::prelude::*;
 
 /// Velocity component
-/// Since this doesn't make sense to use without a transform, this base component
-/// shouldn't be used directly. Instead, a bundle is used to ensure the component
-/// has an associated transform.
+/// Since this doesn't make sense to use without a transform, this base
+/// component shouldn't be used directly. Instead, a bundle is used to ensure
+/// the component has an associated transform.
 pub struct Velocity {
     pub velocity: Vec3, // velocity vector of the moving object in space
     pub ang_vel: Vec3,  // angular velocity vector about which the object rotates

@@ -1,4 +1,4 @@
-/* bevsteroids/systems/moving_sys.rs
+/* bevsteroids/src/systems/moving_sys.rs
 System for entities with Velocity and Transform components
 */
 

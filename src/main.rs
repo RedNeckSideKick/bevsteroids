@@ -13,7 +13,10 @@ mod game_config;
 use game_config::GameConfig;
 mod components;
 mod systems;
-use systems::{moving_sys::*};
+use systems::{
+    moving_sys::*,
+    looping_sys::*,
+};
 
 fn main() {
     // Add game resources and systems
@@ -23,5 +26,6 @@ fn main() {
         .add_startup_system(init.system())
         .add_system(texture_update_sys.system())    // Anti-Alias textures
         .add_system(moving_sys.system())
+        .add_system(looping_sys.system())
         .run();
 }

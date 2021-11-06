@@ -1,4 +1,4 @@
-/* bevsteroids/components/asteroid.rs
+/* bevsteroids/src/components/asteroid.rs
 Component for asteroid entities
 */
 

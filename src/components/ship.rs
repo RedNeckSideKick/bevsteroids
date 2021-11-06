@@ -1,4 +1,4 @@
-/* bevsteroids/components/ship.rs
+/* bevsteroids/src/components/ship.rs
 Component for ship entity
 */
 
