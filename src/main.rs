@@ -16,6 +16,7 @@ mod systems;
 use systems::{
     moving_sys::*,
     looping_sys::*,
+    player_controller_sys::*,
 };
 
 fn main() {
@@ -24,8 +25,10 @@ fn main() {
         .insert_resource(GameConfig::CFG)
         .add_plugins(DefaultPlugins)
         .add_startup_system(init.system())
+        // TODO: bundle these into a plugin in game.rs?
         .add_system(texture_update_sys.system())    // Anti-Alias textures
         .add_system(moving_sys.system())
         .add_system(looping_sys.system())
+        .add_system(player_controller_sys.system())
         .run();
 }

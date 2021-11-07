@@ -9,6 +9,7 @@ use crate::components::{
     main_camera::*,
     moving::*,
     looping::*,
+    player_controller::*,
     asteroid::*,
     ship::*,
 };
@@ -73,8 +74,12 @@ pub fn init(
         // Specify initial conditions (position and velocity) for the entity
         moving: MovingBundle::new_in_plane(
             0.0, 0.0, 0.0,
-            0.0, 0.0, 0.5
+            0.0, 0.0, 0.0
         )
+    })
+    .insert(PlayerController {
+        accel: 250.0,
+        rot_accel: 3.14,
     })
     .insert(Ship);
 }

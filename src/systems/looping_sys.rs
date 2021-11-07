@@ -9,6 +9,11 @@ use crate::components::{
     looping::*
 };
 
+/// looping_sys system - loop Moving entities when they reach the edge of the
+/// screen
+/// inputs:
+///     * wnds  - Windows resource, used for finding the window edges
+///     * query - Query set including looping entities and main camera transform
 pub fn looping_sys(
     wnds: Res<Windows>,
     // mut query: Query<LoopingQuery>,
