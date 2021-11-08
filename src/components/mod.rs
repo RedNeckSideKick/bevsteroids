@@ -7,4 +7,5 @@ pub mod moving;
 pub mod looping;
 pub mod asteroid;
 pub mod ship;
+pub mod bullet;
 pub mod player_controller;

@@ -13,11 +13,7 @@ mod game_config;
 use game_config::GameConfig;
 mod components;
 mod systems;
-use systems::{
-    moving_sys::*,
-    looping_sys::*,
-    player_controller_sys::*,
-};
+use systems::{bullet_sys::bullet_sys, looping_sys::*, moving_sys::*, player_controller_sys::*};
 
 fn main() {
     // Add game resources and systems
@@ -30,5 +26,6 @@ fn main() {
         .add_system(moving_sys.system())
         .add_system(looping_sys.system())
         .add_system(player_controller_sys.system())
+        .add_system(bullet_sys.system())
         .run();
 }

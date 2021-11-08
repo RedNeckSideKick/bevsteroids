@@ -17,6 +17,12 @@ use crate::game_config::GameConfig;
 
 // RESOURCES
 
+/// TextureHandles resource
+/// Keeps track of texture handles that are needed later on in the game
+pub struct TextureHandles {
+    pub bullet_texture: Handle<Texture>,
+}
+
 // COMPONENTS
 
 // SYSTEMS
@@ -42,6 +48,12 @@ pub fn init(
     // populated at runtime...
     let asteroid_texture = asset_server.load(cfg.asteroid);
     let ship_texture = asset_server.load(cfg.ship);
+    let bullet_texture = asset_server.load(cfg.bullet);
+
+    // Insert the texture handles into a resource so they are accessible later
+    cmds.insert_resource(TextureHandles {
+        bullet_texture,
+    });
 
     // Push resources and entities to add to the world into the command buffer
     // Cameras
@@ -77,10 +89,8 @@ pub fn init(
             0.0, 0.0, 0.0
         )
     })
-    .insert(PlayerController {
-        accel: 250.0,
-        rot_accel: 3.14,
-    })
+    // TODO: centrally define these parameters
+    .insert(PlayerController::new(250.0, 3.14, 0.08))
     .insert(Ship);
 }
 
