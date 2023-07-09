@@ -8,6 +8,7 @@ use bevy::prelude::*;
 /// Since this doesn't make sense to use without a transform, this base
 /// component shouldn't be used directly. Instead, a bundle is used to ensure
 /// the component has an associated transform.
+#[derive(Component)]
 pub struct Velocity {
     pub velocity: Vec3, // velocity vector of the moving object in space
     pub ang_vel: Vec3,  // angular velocity vector about which the object rotates

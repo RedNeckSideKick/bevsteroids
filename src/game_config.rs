@@ -2,6 +2,9 @@
 This provides the type definitions for the game_config.ron file
 */
 
+use bevy::prelude::*;
+
+#[derive(Resource)]
 pub struct GameConfig {
     pub asteroid: &'static str,
     pub ship: &'static str,

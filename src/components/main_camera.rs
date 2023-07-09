@@ -2,7 +2,8 @@
 Component for main camera
 */
 
-// use bevy::prelude::*;
+use bevy::prelude::*;
 
 /// MainCamera component
+#[derive(Component)]
 pub struct MainCamera;

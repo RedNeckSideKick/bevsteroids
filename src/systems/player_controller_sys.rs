@@ -31,7 +31,6 @@ pub fn player_controller_sys(
     keyb: Res<Input<KeyCode>>,
     time: Res<Time>,
     mut query: Query<(&mut PlayerController, &mut Velocity, &Transform)>,
-    mut mat: ResMut<Assets<ColorMaterial>>,
 ) {
     // Two different measures of time needed for common use and updating timer
     let dt_sec = time.delta_seconds();
@@ -92,14 +91,11 @@ pub fn player_controller_sys(
                 // Pew pew!
 
                 // Spawn a bullet
-                cmds.spawn_bundle(SpriteBundle {
-                    material: mat.add(ColorMaterial {
-                        texture: Some(tex.bullet_texture.clone()),
+                cmds.spawn(SpriteBundle {
+                        texture: tex.bullet_texture.clone(),
                         ..Default::default()
-                    }),
-                    ..Default::default()
-                })
-                .insert_bundle(LoopingBundle {
+                    })
+                .insert(LoopingBundle {
                     looping: Looping { radius: 8.0 },  // TODO: centrally define this
                     // Specify initial conditions (position and velocity) for the entity
                     moving: MovingBundle {
@@ -112,7 +108,7 @@ pub fn player_controller_sys(
                     }
                 })
                 .insert(Bullet {
-                    lifetime: Timer::from_seconds(1.5, false),
+                    lifetime: Timer::from_seconds(1.5, TimerMode::Once),
                 });
 
                 pc.bullet_timer.reset();

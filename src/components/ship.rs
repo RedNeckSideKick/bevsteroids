@@ -2,7 +2,8 @@
 Component for ship entity
 */
 
-// use bevy::prelude::*;
+use bevy::prelude::*;
 
 /// Ship component
+#[derive(Component)]
 pub struct Ship;

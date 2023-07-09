@@ -12,6 +12,7 @@ use bevy::{
 /// This contains information relating to the control of player-controlled
 /// entities: their acceleration for moving and rotating, cooldown for firing
 /// projectiles.
+#[derive(Component)]
 pub struct PlayerController {
     pub accel: f32,
     pub rot_accel: f32,
@@ -21,7 +22,7 @@ pub struct PlayerController {
 impl PlayerController {
     pub fn new(accel: f32, rot_accel: f32, bullet_cooldown: f32) -> Self {
         // Create a timer that has already elapsed fully
-        let mut timer = Timer::from_seconds(bullet_cooldown, false);
+        let mut timer = Timer::from_seconds(bullet_cooldown, TimerMode::Once);
         timer.tick(Duration::from_secs_f32(bullet_cooldown));
         Self {
             accel,

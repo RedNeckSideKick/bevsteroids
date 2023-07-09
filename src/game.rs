@@ -3,7 +3,6 @@ This file is the primary place for central game data and logic.
 */
 
 use bevy::prelude::*;
-use bevy::render::texture::FilterMode;
 
 use crate::components::{
     main_camera::*,
@@ -19,8 +18,9 @@ use crate::game_config::GameConfig;
 
 /// TextureHandles resource
 /// Keeps track of texture handles that are needed later on in the game
+#[derive(Resource)]
 pub struct TextureHandles {
-    pub bullet_texture: Handle<Texture>,
+    pub bullet_texture: Handle<Image>,
 }
 
 // COMPONENTS
@@ -37,7 +37,6 @@ pub fn init(
     mut cmds: Commands,
     cfg: Res<GameConfig>,
     asset_server: Res<AssetServer>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
     info!("Initializing game...");
 
@@ -57,16 +56,16 @@ pub fn init(
 
     // Push resources and entities to add to the world into the command buffer
     // Cameras
-    cmds.spawn_bundle(OrthographicCameraBundle::new_2d())
+    cmds.spawn(Camera2dBundle::default())
         .insert(MainCamera);    // Flag this camera as the main one
     
     // TODO: wrap entity creation in functions to clean up this setup script
     // Asteroids
-    cmds.spawn_bundle(SpriteBundle {
-        material: materials.add(asteroid_texture.into()),
+    cmds.spawn(SpriteBundle {
+        texture: asteroid_texture.clone(),
         ..Default::default()
     })
-    .insert_bundle(LoopingBundle {
+    .insert(LoopingBundle {
         looping: Looping { radius: 128.0 },  // TODO: centrally define this
         // Specify initial conditions (position and velocity) for the entity
         moving: MovingBundle::new_in_plane(
@@ -77,11 +76,11 @@ pub fn init(
     .insert(Asteroid);
 
     // Ship
-    cmds.spawn_bundle(SpriteBundle {
-        material: materials.add(ship_texture.into()),
+    cmds.spawn(SpriteBundle {
+        texture: ship_texture.clone(),
         ..Default::default()
     })
-    .insert_bundle(LoopingBundle {
+    .insert(LoopingBundle {
         looping: Looping { radius: 50.0 },   // TODO: centrally define this
         // Specify initial conditions (position and velocity) for the entity
         moving: MovingBundle::new_in_plane(
@@ -92,32 +91,4 @@ pub fn init(
     // TODO: centrally define these parameters
     .insert(PlayerController::new(250.0, 3.14, 0.08))
     .insert(Ship);
-}
-
-/// texture_update_sys system - Listens to update events for Assets<Texture>
-/// resources to apply any changes
-/// inputs:
-///     * ev_asset  - event listener tuned to updates to texture resources
-///     * textures  - texture asset resource for applying changes
-pub fn texture_update_sys(
-    mut ev_asset: EventReader<AssetEvent<Texture>>,
-    mut textures: ResMut<Assets<Texture>>
-) {
-    for ev in ev_asset.iter() {
-        match ev {
-            AssetEvent::Created { handle } => {
-                // A texture was just loaded
-                trace!("Event {:?} recieved on texture id {:?}", ev, handle);
-                let texture = textures.get_mut(handle).unwrap();
-
-                // Apply filtering to anti-alias the texture
-                texture.sampler.min_filter = FilterMode::Linear;
-                texture.sampler.mag_filter = FilterMode::Linear;
-            }
-            AssetEvent::Modified { handle} => {
-                trace!("Event {:?} recieved on texture id {:?}", ev, handle);
-            }
-            AssetEvent::Removed { handle: _ } => {}
-        }
-    }
 }

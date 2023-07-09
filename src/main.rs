@@ -8,7 +8,7 @@ use bevy::prelude::*;
 
 // Import game modules
 mod game;
-use game::{init, texture_update_sys};
+use game::init;
 mod game_config;
 use game_config::GameConfig;
 mod components;
@@ -17,15 +17,14 @@ use systems::{bullet_sys::bullet_sys, looping_sys::*, moving_sys::*, player_cont
 
 fn main() {
     // Add game resources and systems
-    App::build()
+    App::new()
         .insert_resource(GameConfig::CFG)
-        .add_plugins(DefaultPlugins)
-        .add_startup_system(init.system())
+        .add_plugins(DefaultPlugins.set(ImagePlugin::default_linear()))
+        .add_systems(Startup, init)
         // TODO: bundle these into a plugin in game.rs?
-        .add_system(texture_update_sys.system())    // Anti-Alias textures
-        .add_system(moving_sys.system())
-        .add_system(looping_sys.system())
-        .add_system(player_controller_sys.system())
-        .add_system(bullet_sys.system())
+        .add_systems(Update, moving_sys)
+        .add_systems(Update, looping_sys)
+        .add_systems(Update, player_controller_sys)
+        .add_systems(Update, bullet_sys)
         .run();
 }

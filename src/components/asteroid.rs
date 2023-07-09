@@ -2,7 +2,8 @@
 Component for asteroid entities
 */
 
-// use bevy::prelude::*;
+use bevy::prelude::*;
 
 /// Asteroid component
+#[derive(Component)]
 pub struct Asteroid;

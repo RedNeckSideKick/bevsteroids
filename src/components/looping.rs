@@ -9,6 +9,7 @@ use super::moving::*;
 /// Similar to how the Moving component doesn't make sense without a transform
 /// component, this component doesn't make sense without a Moving component.
 /// Same story, don't use this directly and instead use a bundle.
+#[derive(Component)]
 pub struct Looping {
     pub radius: f32,
 }
@@ -16,7 +17,6 @@ pub struct Looping {
 #[derive(Bundle)]
 pub struct LoopingBundle {
     pub looping: Looping,
-    #[bundle]
     pub moving: MovingBundle,
 }
 
